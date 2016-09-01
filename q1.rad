@@ -1,0 +1,11 @@
+; Questão 1: Fazer um for que rode 10 vezes
+ 
+LDR RX, #10 ; carrega o valor "10" da memória no registrador RX
+ 
+NOP ; não faz nada, é só pra ilustrar um bloco de código fictício
+NOP ; idem
+SUB RX, #1 ; diminui o valor "1" do registrador "RX"
+ 
+JN, 011 ; se o registrador N estiver negativo, então pule para a linha 11, pois é um sinal de que o FOR acabou (contou de 9 a 0)
+JMP, 05 ; pule para a linha 5
+NOP ; não faz nada, é só para ilustrar um bloco de código fictício

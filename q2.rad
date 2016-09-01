@@ -1,0 +1,17 @@
+; Questão 2: Suponha que haja um valor X na posição 100 da memória, e um valor Y na posição 101. Troque os valores de X e Y se X > Y
+ 
+LDR RA, mem(100) ; guarda o valor que está na posição 100 da memória dentro do registrador RA
+ 
+SUB RA, mem(101) ; subtrai o valor de RA pelo valor que está na posição 101 da memória, e guarda o resultado no registrador RA
+ 
+JN, 017; se o registrador N está negativo, então ele finaliza o programa, pois X é inferior a Y
+; este bloco troca os valores:
+LDR RA, mem(100) ; guarda novamente o valor que está na posição 100 da memória dentro do registrador RA
+ 
+LDR RB, mem(101) ; guarda o valor que está na posição 101 da memória dentro do registrador RB
+ 
+STR RA, mem(101) ; coloca o valor em RA dentro do endereço 101 da memória
+ 
+STR RB, mem(100) ; coloca o valor em RB dentro do endereço 100 da memória
+ 
+HLT ; finaliza o programa

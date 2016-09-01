@@ -1,0 +1,46 @@
+LDR x #0
+LDR b #0
+LDR a #10
+
+; precisamos pegar o primeiro valor de B
+; assim, podemos carrega-lo
+; como o primeiro valor anterior
+
+ADD b 128,x
+ADD x #1
+STR b ANT
+SUB a #1
+
+LOOP:
+    LDR b #0                                ; faz parte da estrutura básica do for
+    ADD b 128,x                             ; faz parte da estrutura básica do for
+    ADD x #1                                ; faz parte da estrutura básica do for
+    ; inicio do "if"
+        ; se:
+            STR b ATL                       ; guarda o valor atual de B
+            SUB b ANT                       ; B = B - VALOR_ANTERIOR
+            JN FIM_LOOP                     ; se der negativo, nao fazemos nada
+        ; senao:
+            LDR b ATL                       ; carrega o valor original de B novamente em B
+            STR b ANT                       ; ANT passa a receber este valor atual, que e o maior
+    ; fim do "if"
+    FIM_LOOP:
+        SUB a #1                            ; faz parte da estrutura básica do for
+        JZ FIM                              ; faz parte da estrutura básica do for
+JMP LOOP                                    ; faz parte da estrutura básica do for
+
+FIM: HLT
+
+ORG 128
+DB 1
+DB 100
+DB 3
+DB 4
+DB 5
+DB 2
+DB 101
+DB 120
+DB 119
+DB 3
+ANT: DB 0                                   ; o maior fica guardado aqui
+ATL: DB 0
