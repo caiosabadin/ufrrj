@@ -157,12 +157,6 @@ void verTodosAlbuns(void) {
 
 				// guarda o token no genero da vez
 				strcpy(generos[controle-4], token);
-
-				// nesta linha, marca-se a proxima posicao do vetor de generos como NULL,
-				// o que implica que, quando terminar de ler todos, o proximo depois deles
-				// estara NULL, tendo um marcador com o qual fazer ifs e whiles
-
-				generos[controle-3] = NULL;
 			}
 
 			// pega o proximo token, o que permite avançar no WHILE
@@ -177,14 +171,19 @@ void verTodosAlbuns(void) {
 		// aqui, ele apresentara o album recem-encontrado
 		printf("Nome: %s.\nArtista: %s.\nAno: %d.\nNota: %.1f.\nGeneros: ", getTitulo(album), getBanda(album), getAno(album), getNota(album));
 		int k = 0;
-		while(getGeneros(album)[k]!=NULL) {
-			if(getGeneros(album)[k+1]==NULL) {
+		// como o for anterior pegou um album e abaixo sao exibidos os generos deste album recem-encontrado,
+		//a variavel "controle" subtraida de 4 unidades (uma para o titulo, outra para a banda, o ano e a
+		// nota)indica a quantidade de generos lidos para o album encontrado 
+		int totalGenerosLidos = controle-4;
+
+		for(k=0;k<totalGenerosLidos;k++) {
+			// significa que ele leu o ultimo genero
+			if(k==(totalGenerosLidos-1)) {
 				printf("%s.\n", getGeneros(album)[k]);	
 			}
 			else {
 				printf("%s, ", getGeneros(album)[k]);
 			}
-			k++;
 		}
 
 		// esse if apenas serve para garantir que a pessoa so precise apertar ENTER uma vez em todos os casos...
@@ -285,13 +284,8 @@ int consultaAlbum(void) {
 					generos[controle-4] = (char *)malloc(sizeof(char)*BUFFER); 
 
 					// guarda o token no genero da vez
+
 					strcpy(generos[controle-4], token);
-
-					// nesta linha, marca-se a proxima posicao do vetor de generos como NULL,
-					// o que implica que, quando terminar de ler todos, o proximo depois deles
-					// estara NULL, tendo um marcador com o qual fazer ifs e whiles
-
-					generos[controle-3] = NULL;
 				}
 
 				// pega o proximo token, o que permite avançar no WHILE
@@ -316,14 +310,20 @@ int consultaAlbum(void) {
 					// aqui, ele apresentara o album recem-encontrado
 					printf("O resultado encontrado foi: \nNome: %s.\nArtista: %s.\nAno: %d.\nNota: %.1f.\nGeneros: ", getTitulo(album), getBanda(album), getAno(album), getNota(album));
 					int k = 0;
-					while(getGeneros(album)[k]!=NULL) {
-						if(getGeneros(album)[k+1]==NULL) {
+
+					// como o for anterior para ao encontrar o album buscado, a variavel "controle" subtraida
+					// de 4 unidades (uma para o titulo, outra para a banda, o ano e a nota) indica a quantidade
+					// de generos lidos para o album encontrado 
+					int totalGenerosLidos = controle-4;
+
+					for(k=0;k<totalGenerosLidos;k++) {
+						// significa que ele leu o ultimo genero
+						if(k==(totalGenerosLidos-1)) {
 							printf("%s.\n", getGeneros(album)[k]);	
 						}
 						else {
 							printf("%s, ", getGeneros(album)[k]);
 						}
-						k++;
 					}
 					return posicaoDoAlbumBuscadoNoArquivo;
 				}
