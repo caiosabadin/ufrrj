@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct no {
+    int valor;
+    struct no *prox;
+} No;
+
+No *criaLista(void);
+No *insere(No *lista, int valor);
+void imprime(No *lista);
+void esvaziaLista(No *lista);
+
+int main(void) {
+    No *lst = criaLista();
+    lst = insere(lst, 1);
+    lst = insere(lst, 2);
+    lst = insere(lst, 3);
+    lst = insere(lst, 4);
+    lst = insere(lst, 5);
+    imprime(lst);
+    esvaziaLista(lst);
+    return 0;
+}
+
+void esvaziaLista(No *lista) {
+    No *aux = lista;
+    while(aux!=NULL) {
+        No *prox = aux->prox;
+        free(aux);
+        aux = prox;
+    }
+    free(lista);
+    free(aux);
+}
+
+void imprime(No *lista) {
+    No *aux = lista;
+    while(aux!=NULL) {
+        printf("Valor: %d.\n", aux->valor);
+        aux=aux->prox;
+    }
+    free(aux);
+}
+
+No *insere(No *lista, int valor) {
+    No *no = (No *)malloc(sizeof(No));
+    if(!no) {
+        printf("Sem espaco na memoria!\n");
+        exit(1);
+    }
+    no->valor=valor;
+    no->prox = lista;
+    return no;
+}
+
+No *criaLista(void) {
+    return NULL;
+}
