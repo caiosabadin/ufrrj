@@ -8,6 +8,8 @@ typedef struct no {
 
 No *criaLista(void);
 No *insere(No *lista, int valor);
+No *removeInicio(No *lista);
+No *removeFim(No *lista);
 void imprime(No *lista);
 void esvaziaLista(No *lista);
 
@@ -18,9 +20,40 @@ int main(void) {
     lst = insere(lst, 3);
     lst = insere(lst, 4);
     lst = insere(lst, 5);
+    lst = removeInicio(lst);
+    lst = removeFim(lst);
     imprime(lst);
     esvaziaLista(lst);
     return 0;
+}
+
+No *removeFim(No *lista) {
+    if(lista==NULL) {
+        printf("Lista vazia!\n");
+        return NULL;
+    }
+    No *anterior = lista;
+    No *proximo = anterior->prox;
+    if(proximo==NULL) {
+        return NULL;
+    }
+    while((proximo->prox)!=NULL) {
+        anterior = anterior->prox;
+        proximo = proximo->prox;
+    }
+    anterior->prox=NULL;
+    free(proximo);
+    return lista;
+}
+
+No *removeInicio(No *lista) {
+    if(lista==NULL) {
+        printf("Lista vazia!\n");
+        return NULL;
+    }
+    No *aux = lista->prox;
+    free(lista);
+    return aux;
 }
 
 void esvaziaLista(No *lista) {
