@@ -67,7 +67,6 @@ void esvazia(Fila *f) {
         free(aux);
         aux=f->inicio;
     }
-    free(aux);
     free(f);
 }
 

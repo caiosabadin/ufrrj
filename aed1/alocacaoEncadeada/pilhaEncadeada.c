@@ -23,8 +23,6 @@ int main(void) {
     push(p, 30);
     pop(p);
     pop(p);
-    /*pop(p);
-    pop(p);*/
     esvazia(p);
     return 0;
 }

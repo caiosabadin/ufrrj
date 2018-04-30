@@ -64,7 +64,6 @@ void esvaziaLista(No *lista) {
         aux = prox;
     }
     free(lista);
-    free(aux);
 }
 
 void imprime(No *lista) {
