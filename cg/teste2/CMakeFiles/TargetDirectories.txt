@@ -1,0 +1,3 @@
+/home/caio/Área de trabalho/ufrrj/cg/teste2/CMakeFiles/rebuild_cache.dir
+/home/caio/Área de trabalho/ufrrj/cg/teste2/CMakeFiles/edit_cache.dir
+/home/caio/Área de trabalho/ufrrj/cg/teste2/CMakeFiles/FiltroGaussiano.dir
