@@ -10,6 +10,10 @@ int main(void) {
 	kernel /= 25;
 
 	cv::Mat original = cv::imread("/home/caio/Imagens/a.png", 1);
+	if(original.empty()) {
+		cerr << "Imagem nao encontrada!" << endl;
+		exit(-1);
+	}
 	cv::Mat resultado;
 	cv::filter2D(original, resultado, -1, kernel);
 
