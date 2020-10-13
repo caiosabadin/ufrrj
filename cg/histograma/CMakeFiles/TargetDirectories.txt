@@ -1,3 +1,0 @@
-/home/caio/Área de trabalho/ufrrj/cg/histograma/CMakeFiles/rebuild_cache.dir
-/home/caio/Área de trabalho/ufrrj/cg/histograma/CMakeFiles/edit_cache.dir
-/home/caio/Área de trabalho/ufrrj/cg/histograma/CMakeFiles/Histograma.dir

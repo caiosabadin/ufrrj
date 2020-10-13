@@ -9,8 +9,14 @@ using namespace cv;
 int get_max_y(vector<int> vet);
 vector<vector<int>> calcular_histograma(Mat imagem_original);
 void marcar_linha(Mat grafico, Vec3b cor, int coluna, int linha);
-void projetar_cor(vector<vector<int>> histograma, string nome, int canal_cor, Vec3b cor);
-void projetar_histograma(vector<vector<int>> histograma);
+Mat projetar_cor(vector<vector<int>> histograma, string nome, int canal_cor, Vec3b cor);
+void manipula_mouse(int event, int x, int y, int flags, void* userdata);
+
+class Parametros {
+    public:
+        int cor;
+        Mat imagem;
+};
 
 int main(void) {
 
@@ -31,7 +37,29 @@ int main(void) {
     resizeWindow("Original", w, h);
     imshow("Original", imagem);
 
-    projetar_histograma(calcular_histograma(imagem));            
+    vector<vector<int>> histograma = calcular_histograma(imagem);
+
+    enum cor{canal_red, canal_green, canal_blue};
+
+    Mat img_azul = projetar_cor(histograma, "azul", canal_blue, Vec3b(255, 200, 0));
+    Mat img_verde = projetar_cor(histograma, "verde", canal_green, Vec3b(0, 255, 0));
+    Mat img_vermelha = projetar_cor(histograma, "vermelha", canal_red, Vec3b(0, 0, 255));
+
+    Parametros p;
+    p.cor = canal_blue;
+    p.imagem = img_azul;
+
+    Parametros p2;
+    p2.cor = canal_green;
+    p2.imagem = img_verde;
+
+    Parametros p3;
+    p3.cor = canal_red;
+    p3.imagem = img_vermelha;
+
+    setMouseCallback("azul", manipula_mouse, &p);
+    setMouseCallback("verde", manipula_mouse, &p2);
+    setMouseCallback("vermelha", manipula_mouse, &p3);
 
 	waitKey(0);
 	return 0;
@@ -77,7 +105,29 @@ vector<vector<int>> calcular_histograma(Mat imagem_original) {
 	return resultado;
 }
 
-void projetar_cor(vector<vector<int>> histograma, string nome, int canal_cor, Vec3b cor) {
+void manipula_mouse(int event, int x, int y, int flags, void* params) {
+
+    /*
+     * Params são parâmetros extras, passados pelo usuário. No caso, passamos &imagem,
+     * que é um ponteiro para nossa imagem. Aí, aqui, instanciamos esse endereço dentro
+     * da função manipuladora de mouse, fazendo, um typecast.
+     */
+
+    //Mat imagem = *(static_cast<Mat *>(params));
+    Parametros parametros = *(static_cast<Parametros *>(params));
+
+    string cor = "";
+    if(parametros.cor == 2)
+        cor = "\033[1;34m";
+    else if(parametros.cor == 1)
+        cor = "\033[1;32m";
+    else
+        cor = "\033[1;31m";
+
+    cout << cor << "Ponto: " << "(" << x << ", " << (parametros.imagem.rows - y) << ")" << endl;
+}
+
+Mat projetar_cor(vector<vector<int>> histograma, string nome, int canal_cor, Vec3b cor) {
     int max_y = get_max_y(histograma[canal_cor]);
     int normalizador_x = ((max_y*1.5)/255);
     int max_x = 255*normalizador_x;
@@ -97,19 +147,14 @@ void projetar_cor(vector<vector<int>> histograma, string nome, int canal_cor, Ve
 
     int width = imagem.cols;
 	int height = imagem.rows;
-    int h = height * 400 / width;
+    int w = 400;
+    int h = height * w / width;
     
     resizeWindow(nome, w, h);
     imshow(nome, imagem);
     imwrite(nome + ".jpg", imagem);
-}
-
-void projetar_histograma(vector<vector<int>> histograma) {
-    enum cor{canal_red, canal_green, canal_blue};
-
-    projetar_cor(histograma, "azul", canal_blue, Vec3b(255, 200, 0));
-    projetar_cor(histograma, "verde", canal_green, Vec3b(0, 255, 0));
-    projetar_cor(histograma, "vermelha", canal_red, Vec3b(0, 0, 255));
+    
+    return imagem;
 }
 
 void marcar_linha(Mat grafico, Vec3b cor, int coluna, int linha) {
