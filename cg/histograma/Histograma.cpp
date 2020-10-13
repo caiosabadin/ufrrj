@@ -1,16 +1,16 @@
 #include "iostream"
 #include "fstream"
 #include "type_traits"
-#include "cmath"
 #include <opencv2/opencv.hpp>
 
 using namespace std;
 using namespace cv;
 
-int max_y(vector<int> vet);
+int get_max_y(vector<int> vet);
 vector<vector<int>> calcular_histograma(Mat imagem_original);
 void marcar_linha(Mat grafico, Vec3b cor, int coluna, int linha);
-void projetar_histograma(vector<vector<int>> histograma, Mat imagem_original);
+void projetar_cor(vector<vector<int>> histograma, string nome, int canal_cor, Vec3b cor);
+void projetar_histograma(vector<vector<int>> histograma);
 
 int main(void) {
 
@@ -21,29 +21,17 @@ int main(void) {
 		exit(-1);
 	}
 
-    /*
-     * A diferença entre o blur e o median é que o median usa uma mediana de tamanho
-     * inteiro, e o blur usa uma matriz. Por isso, para um passamos Size(), e, para
-     * outro, apenas um inteiro resolve, no caso do terceiro parâmetro da função.
-     */
+    int width = imagem.cols;
+	int height = imagem.rows;
+    int w = 400;
+    int h = height * w / width;
+        
+	// Resize the window to width 800xh
+    namedWindow("Original", WINDOW_NORMAL);
+    resizeWindow("Original", w, h);
+    imshow("Original", imagem);
 
-    Mat imagem_blur;
-	blur(imagem, imagem_blur, Size(5,5));
-
-    Mat imagem_median;
-	medianBlur(imagem, imagem_median, 11);
-
-    projetar_histograma(calcular_histograma(imagem), imagem);
-	
-    /* Exibie as imagens
-	namedWindow(nome_arquivo, WINDOW_NORMAL); 
-	imshow(nome_arquivo, imagem );                
-	
-	namedWindow("Blur", WINDOW_NORMAL); 
-	imshow("Blur", imagem_blur );                
-	
-	namedWindow("Median", WINDOW_NORMAL); 
-	imshow("Median", imagem_median ); */                
+    projetar_histograma(calcular_histograma(imagem));            
 
 	waitKey(0);
 	return 0;
@@ -89,76 +77,39 @@ vector<vector<int>> calcular_histograma(Mat imagem_original) {
 	return resultado;
 }
 
-void projetar_histograma(vector<vector<int>> histograma, Mat imagem_original) {
-    enum cor{canal_red, canal_green, canal_blue};
+void projetar_cor(vector<vector<int>> histograma, string nome, int canal_cor, Vec3b cor) {
+    int max_y = get_max_y(histograma[canal_cor]);
+    int normalizador_x = ((max_y*1.5)/255);
+    int max_x = 255*normalizador_x;
 
-    int max_x = 256;
+    Mat imagem = Mat::zeros( Size(max_x, max_y), CV_8UC3);
+    namedWindow(nome, WINDOW_NORMAL);
 
-    Mat imagem_azul = Mat::zeros( Size(max_x, max_y(histograma[canal_blue])), CV_8UC3);
-    namedWindow("Azul", WINDOW_NORMAL);
-
-    Mat imagem_verde = Mat::zeros( Size(max_x, max_y(histograma[canal_green])), CV_8UC3);
-    namedWindow("Verde", WINDOW_NORMAL);
-
-    Mat imagem_vermelha = Mat::zeros( Size(max_x, max_y(histograma[canal_red])), CV_8UC3);
-    namedWindow("Vermelha", WINDOW_NORMAL);
-
-    for(int i = 0;i < 256; i++) {
+    for(int i = 0, j = 0;i < max_x; i+=normalizador_x, j++) {
         int x_cartesiano = i;
-        int y_cartesiano = histograma[canal_blue][i];
+        int y_cartesiano = histograma[canal_cor][j];
 
-        cout << "X: " << x_cartesiano << ", H: " << y_cartesiano << endl;
-        marcar_linha(imagem_azul, Vec3b(255, 200, 0), x_cartesiano, y_cartesiano);
-
-        y_cartesiano = histograma[canal_red][i];
-        cout << "X: " << x_cartesiano << ", H: " << y_cartesiano << endl;
-        marcar_linha(imagem_vermelha, Vec3b(0, 0, 255), x_cartesiano, y_cartesiano);
-
-        y_cartesiano = histograma[canal_green][i];
-        cout << "X: " << x_cartesiano << ", H: " << y_cartesiano << endl;
-        marcar_linha(imagem_verde, Vec3b(0, 255, 0), x_cartesiano, y_cartesiano);
+        for(int k = 0;k<normalizador_x;k++)
+            marcar_linha(imagem, cor, x_cartesiano + k, y_cartesiano);
     }
 
-    /*for(int i = 0; i < 256; i++) {
-        int x = i;
-        int y = histograma[canal_blue][i];
+    flip(imagem, imagem, 0);
 
-        imagem_azul.at<Vec3b>(255-x, y) = Vec3b(255, 200, 0);
-        namedWindow("Azul", WINDOW_NORMAL); 
-        imshow("Azul", imagem_azul);
+    int width = imagem.cols;
+	int height = imagem.rows;
+    int h = height * 400 / width;
+    
+    resizeWindow(nome, w, h);
+    imshow(nome, imagem);
+    imwrite(nome + ".jpg", imagem);
+}
 
-        waitKey(10000);
+void projetar_histograma(vector<vector<int>> histograma) {
+    enum cor{canal_red, canal_green, canal_blue};
 
-
-        /*y = histograma[canal_green][i];
-        imagem_verde.at<Vec3b>(x, y) = Vec3b(0, 255, 0);
-
-        y = histograma[canal_red][i];
-        imagem_vermelha.at<Vec3b>(x, y) = Vec3b(0, 0, 255);
-
-    }*/
- 
-    flip(imagem_azul, imagem_azul, 0);
-    imshow("Azul", imagem_azul);
-    imwrite("azul.jpg", imagem_azul);
-
-    flip(imagem_verde, imagem_verde, 0);
-    imshow("Verde", imagem_verde);
-    imwrite("verde.jpg", imagem_verde);
-
-    flip(imagem_vermelha, imagem_vermelha, 0);
-    imshow("Vermelha", imagem_vermelha);
-    imwrite("vermelha.jpg", imagem_vermelha);
-
-    /* 
-    imshow("Verde", imagem_verde);
-
-     
-    imshow("Vermelha", imagem_vermelha);
-
-    //Vec3b ponto_azul = Vec3b(255, 0, 0);
-    //Vec3b ponto_verde = Vec3b(0, 255, 0);
-    //Vec3b ponto_vermelho = Vec3b(0, 0, 255);*/
+    projetar_cor(histograma, "azul", canal_blue, Vec3b(255, 200, 0));
+    projetar_cor(histograma, "verde", canal_green, Vec3b(0, 255, 0));
+    projetar_cor(histograma, "vermelha", canal_red, Vec3b(0, 0, 255));
 }
 
 void marcar_linha(Mat grafico, Vec3b cor, int coluna, int linha) {
@@ -167,7 +118,7 @@ void marcar_linha(Mat grafico, Vec3b cor, int coluna, int linha) {
     }
 }
 
-int max_y(vector<int> vet) {
+int get_max_y(vector<int> vet) {
     int m = 0;
     int t = vet.size();
     for(int i = 0;i<t;i++) {
