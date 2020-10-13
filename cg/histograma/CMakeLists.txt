@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project( Histograma )
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( Histograma Histograma.cpp )
+target_link_libraries( Histograma ${OpenCV_LIBS} )
