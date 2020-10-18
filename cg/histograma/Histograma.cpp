@@ -28,11 +28,10 @@ int main(void) {
 	}
 
     int width = imagem.cols;
-	int height = imagem.rows;
+    int height = imagem.rows;
     int w = 400;
     int h = height * w / width;
         
-	// Resize the window to width 800xh
     namedWindow("Original", WINDOW_NORMAL);
     resizeWindow("Original", w, h);
     imshow("Original", imagem);
@@ -57,12 +56,17 @@ int main(void) {
     p3.cor = canal_red;
     p3.imagem = img_vermelha;
 
+    Parametros p4;
+    p4.cor = 3;
+    p4.imagem = imagem;
+
     setMouseCallback("azul", manipula_mouse, &p);
     setMouseCallback("verde", manipula_mouse, &p2);
     setMouseCallback("vermelha", manipula_mouse, &p3);
+    setMouseCallback("Original", manipula_mouse, &p4);
 
-	waitKey(0);
-	return 0;
+    waitKey(0);
+    return 0;
 }
 
 vector<vector<int>> calcular_histograma(Mat imagem_original) {
@@ -75,10 +79,10 @@ vector<vector<int>> calcular_histograma(Mat imagem_original) {
     vector<vector<int>> resultado(3, contraste);
 
     /* Percorre a imagem original, pixel a pixel */
-	for(int r = 0; r < imagem_original.rows; r++) {
-		for(int c = 0; c < imagem_original.cols; c++) {
+    for(int r = 0; r < imagem_original.rows; r++) {
+    	for(int c = 0; c < imagem_original.cols; c++) {
             /* O vec3b vem como BGR, e não RGB */
-			Vec3b p = imagem_original.at<Vec3b>(r,c);
+    		Vec3b p = imagem_original.at<Vec3b>(r,c);
 
             /* 
              * Se o rgb vier (209, 237, 217), abaixo virá:
@@ -99,10 +103,10 @@ vector<vector<int>> calcular_histograma(Mat imagem_original) {
             resultado[canal_blue][valor_px_azul]++;
             resultado[canal_green][valor_px_verde]++;
             resultado[canal_red][valor_px_vermelho]++;
-		}
+    	}
     }
 
-	return resultado;
+    return resultado;
 }
 
 void manipula_mouse(int event, int x, int y, int flags, void* params) {
@@ -113,18 +117,23 @@ void manipula_mouse(int event, int x, int y, int flags, void* params) {
      * da função manipuladora de mouse, fazendo, um typecast.
      */
 
-    //Mat imagem = *(static_cast<Mat *>(params));
     Parametros parametros = *(static_cast<Parametros *>(params));
 
     string cor = "";
-    if(parametros.cor == 2)
-        cor = "\033[1;34m";
-    else if(parametros.cor == 1)
-        cor = "\033[1;32m";
-    else
-        cor = "\033[1;31m";
+    if (parametros.cor != 3) {
+        if(parametros.cor == 2)
+            cor = "\033[1;34m";
+        else if(parametros.cor == 1)
+            cor = "\033[1;32m";
+        else
+            cor = "\033[1;31m";
 
-    cout << cor << "Ponto: " << "(" << x << ", " << (parametros.imagem.rows - y) << ")" << endl;
+        cout << cor << "Ponto: " << "(" << x << ", " << (parametros.imagem.rows - y) << ")" << endl;
+    } else {
+        cor = "\033[1;37m";
+        Vec3b p = parametros.imagem.at<Vec3b>(x,y);
+        cout << cor << "Imagem original, pixel RGB: (" << (int)p[2] << ", " << (int)p[1] << ", " << (int)p[0] << ")" << endl;
+    }
 }
 
 Mat projetar_cor(vector<vector<int>> histograma, string nome, int canal_cor, Vec3b cor) {
@@ -146,7 +155,7 @@ Mat projetar_cor(vector<vector<int>> histograma, string nome, int canal_cor, Vec
     flip(imagem, imagem, 0);
 
     int width = imagem.cols;
-	int height = imagem.rows;
+    int height = imagem.rows;
     int w = 400;
     int h = height * w / width;
     
