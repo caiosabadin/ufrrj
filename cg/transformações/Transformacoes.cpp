@@ -7,9 +7,9 @@ using namespace cv;
  
 int main(int argc, char* argv[]) {
 
-  if(argc!=7) {
+  if(argc!=8) {
     std::cerr << "ERRO. Chame o programa com os argumentos:" << std::endl;
-    std::cerr << argv[0] << " x0 y0 comprimento angulo escala_x0 escala_y0" << std::endl;
+    std::cerr << argv[0] << " x0 y0 comprimento angulo escala_x0 escala_y0 imagem.jpg" << std::endl;
     exit(-1);
   }
 
@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
 
   angulo_radianos *= 3.1415 / 180;
 
-	Mat imagem = imread("a.jpg");
+	Mat imagem = imread(argv[7]);
 	if ( imagem.empty() ){
 		std::cerr << "Imagem não encontrada." << std::endl;
 		exit(-1);
