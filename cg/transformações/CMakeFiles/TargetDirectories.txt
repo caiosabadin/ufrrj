@@ -1,0 +1,3 @@
+/home/caio/Área de trabalho/ufrrj/cg/transformações/CMakeFiles/rebuild_cache.dir
+/home/caio/Área de trabalho/ufrrj/cg/transformações/CMakeFiles/edit_cache.dir
+/home/caio/Área de trabalho/ufrrj/cg/transformações/CMakeFiles/Transformacoes.dir

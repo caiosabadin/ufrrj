@@ -8,8 +8,8 @@ using namespace cv;
 int main(int argc, char* argv[]) {
 
   if(argc!=7) {
-    std::cout << "ERRO. Chame o programa com os argumentos:" << std::endl;
-    std::cout << argv[0] << " x0 y0 comprimento angulo escala_x0 escala_y0" << std::endl;
+    std::cerr << "ERRO. Chame o programa com os argumentos:" << std::endl;
+    std::cerr << argv[0] << " x0 y0 comprimento angulo escala_x0 escala_y0" << std::endl;
     exit(-1);
   }
 
@@ -32,7 +32,6 @@ int main(int argc, char* argv[]) {
   Vector3d p4(ret_y0 + comprimento, ret_x0 + comprimento, 1);
   Vector3d d1, d2, d3, d4;
 
-  int tam_img = 512;
   Mat original = Mat::zeros(tam_img, tam_img, CV_8UC3);
 
   /* Os dois pontos são os vértices do retângulo, e a escalar são as cores */
